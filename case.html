@@ -2,9 +2,138 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Case 01</title>
+    <link rel="stylesheet" href="assets/lib/normalize.css">
+    <style>
+        #main-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: black;
+            flex-direction: column;
+        }
+
+        #main-section > div {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        #lights {
+            display: flex;
+            border-top: 1px solid white;
+            border-bottom: 1px solid white;
+            margin-bottom: 20px;
+        }
+
+        #main-section > div > div {
+            width: 150px;
+            height: 50px;
+            border: 1px solid white;
+            margin: 10px;
+        }
+
+        #title {
+            color: red;
+        }
+
+        #controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        #startBtn, #stopBtn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+        }
+
+        #startBtn:hover, #stopBtn:hover {
+            background-color: #555;
+        }
+    </style>
 </head>
 <body>
+
+<section id="main-section">
+    <h1 id="title">JavaScript Knight Rider</h1>
+    <div id="lights">
+        <div class="x"></div>
+        <div class="x"></div>
+        <div class="x"></div>
+        <div class="x"></div>
+        <div class="x"></div>
+        <div class="x"></div>
+        <div class="x"></div>
+    </div>
+    <div id="controls">
+        <button id="startBtn">Start</button>
+        <button id="stopBtn">Stop</button>
+    </div>
+</section>
+
+<audio id="knightRiderAudio" src="assets/audio/KnightRiderAudio.mp3" preload="auto"></audio>
+
+<script src="assets/lib/jquery-3.7.1.min.js"></script>
+
+<script>
+    let box = $('.x');
+    let i = 1;
+    let direction = 1;
+    let animationInterval;
+    let isRunning = false;
+    let audio = document.getElementById('knightRiderAudio');
+
+    let colors = ['white', 'red', 'lightpink'];
+
+    function knightRider() {
+        box.css('background-color', colors[0]);
+
+        box.eq(i).css('background-color', colors[1]);
+
+        if (i - 1 >= 0) {
+            box.eq(i - 1).css('background-color', colors[2]);
+        }
+
+        if (i + 1 < box.length) {
+            box.eq(i + 1).css('background-color', colors[2]);
+        }
+
+        i += direction;
+
+        if (i >= box.length - 1 || i <= 0) {
+            direction *= -1;
+            i += direction * 2;
+        }
+    }
+
+    function startAnimation() {
+        if (!isRunning) {
+            animationInterval = setInterval(knightRider, 150);
+            isRunning = true;
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Audio play failed:", e));
+        }
+    }
+
+    function stopAnimation() {
+        clearInterval(animationInterval);
+        box.css('background-color', colors[0]);
+        i = 1;
+        direction = 1;
+        isRunning = false;
+        audio.pause();
+    }
+
+    stopAnimation();
+
+    $('#startBtn').click(startAnimation);
+    $('#stopBtn').click(stopAnimation);
+</script>
 
 </body>
 </html>
